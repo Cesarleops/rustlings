@@ -44,8 +44,34 @@ impl State {
     }
 
     fn process(&mut self, message: Message) {
-        // TODO: Create a match expression to process the different message
-        // variants using the methods defined above.
+        match message {
+            Message::Resize { width, height } => self.resize(width, height),
+            Message::Move(point) => self.move_position(point),
+            Message::Echo(phrase) => self.echo(phrase),
+            Message::ChangeColor(red, green, blue) => self.change_color(red, green, blue),
+            Message::Quit => self.quit(),
+        };
+    }
+
+    // in cases where we only care about one pattern, match becomes to much boilerplate
+    // rust provides if let and let else. For the example let's say we only care about the
+    // change color pattern
+    fn let_else(&self, message: Message) {
+        // let else exposes the data from the variant to the outer
+        // scope to be used
+        let Message::ChangeColor(g, r, b) = message else {
+            return;
+        };
+        println!("{g},{r},{b}")
+    }
+
+    fn if_let(&self, message: Message) {
+        if let Message::ChangeColor(g, r, b) = message {
+            //here we can extract the values
+            println!("{g},{r},{b}")
+        } else {
+            return;
+        }
     }
 }
 
